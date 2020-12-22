@@ -26,4 +26,5 @@ class RequestHandler_httpd(BaseHTTPRequestHandler):
 server_address_httpd=('192.168.1.55',8080)
 httpd=HTTPServer(server_address_httpd, RequestHandler_httpd)
 print('Starting server:')
-httpd.server_forever()
+httpd.serve_forever()
+GPIO.cleanup()
