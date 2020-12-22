@@ -5,56 +5,68 @@ import time
 # Set GPIO numbering mode
 GPIO.setmode(GPIO.BOARD)
 
-# Set pins 11 & 12 as outputs, and define as PWM servo1 & servo2
-GPIO.setup(11,GPIO.OUT)
-servo1 = GPIO.PWM(11,50) # pin 11 for servo1
-GPIO.setup(12,GPIO.OUT)
-servo2 = GPIO.PWM(12,50) # pin 12 for servo2
+VERTICAL_PIN = 11
+HORIZONTAL_PIN = 12
 
-# Start PWM running on both servos, value of 0 (pulse off)
-servo1.start(0)
-servo2.start(0)
 
-# Turn servo1 to 90
-servo1.ChangeDutyCycle(7)
-time.sleep(0.5)
-servo1.ChangeDutyCycle(0)
 
-# Wait for 2 seconds
-time.sleep(2)
+class Angles:
+    _instance = None
 
-# Turn servo2 to 90 & servo1 back to 0
-servo2.ChangeDutyCycle(7)
-servo1.ChangeDutyCycle(2)
-time.sleep(0.5)
-servo2.ChangeDutyCycle(0)
-servo1.ChangeDutyCycle(0)
+    @classmethod
+    def instance(cls):
+        if Angles._instance is None:
+            Angles._instance = Angles()
+        return Angles._instance
 
-# Wait again for 2 seconds! :)
-time.sleep(2)
+    def __init__(self):
+        # Set pins 11 & 12 as outputs, and define as PWM servo1 & servo2
+        GPIO.setup(VERTICAL_PIN, GPIO.OUT)
+        vertical = GPIO.PWM(VERTICAL_PIN, 50)
+        GPIO.setup(HORIZONTAL_PIN, GPIO.OUT)
+        horizontal = GPIO.PWM(HORIZONTAL_PIN, 50)
+        # Start PWM running on both servos, value of 0 (pulse off)
+        vertical.start(0)
+        horizontal.start(0) #TODO check what 0 means, mybe the next 3 lines are redundent
+        vertical.ChangeDutyCycle(2)
+        horizontal.ChangeDutyCycle(2)
+        self.rest()
+        self.v = 0
+        self.h = 0
 
-# Turn servo2 to 180 & servo1 to 90
-servo2.ChangeDutyCycle(12)
-servo1.ChangeDutyCycle(7)
-time.sleep(0.5)
-servo2.ChangeDutyCycle(0)
-servo1.ChangeDutyCycle(0)
+    def __del__(self):
+        # Clean things up at the end
+        self.vertical.stop()
+        self.horizontal.stop()
+        GPIO.cleanup() # TODO: it could cause problems, maybe this should be called only in the end of everything
+        print("servos shutdown sucsessfuly")
 
-# Another little 2 second pause...
-time.sleep(2)
 
-# Turn both servos back to 0
-servo2.ChangeDutyCycle(2)
-servo1.ChangeDutyCycle(2)
-time.sleep(0.5)
-servo2.ChangeDutyCycle(0)
-servo1.ChangeDutyCycle(0)
+    """
+    makes the servos rest at the current angle, might prevent jitter.
+    will cause problems only if to much torque is applied on the servo.
+    """
+    def rest(self):
+        self.vertical.ChangeDutyCycle(0)
+        self.horizontal.ChangeDutyCycle(0)
 
-time.sleep(2)
+    def set(self, point: tuple[float]):
+        vertical_angle, horizontal_angle = point
+        self.vertical.ChangeDutyCycle(2 + vertical_angle/180)
+        self.horizontal.ChangeDutyCycle(2 + horizontal_angle/180)
+        self.v = vertical_angle
+        self.h = horizontal_angle
 
-#Clean things up at the end
-servo1.stop()
-servo2.stop()
-GPIO.cleanup()
-
-print ("Goodbye")
+    def move(self, point: tuple[float], travel_time=0.5, resolution=10, smooth=True):
+        vertical_angle, horizontal_angle = point
+        dv = (vertical_angle - self.v)/resolution
+        dh = (horizontal_angle - self.h)/resolution
+        dt = travel_time/resolution  # delay between individual moves
+        for i in range(resolution):
+            self.set((self.v + dv, self.h + dh))
+            if smooth:  #TODO check tolorances and ratios that prevents jitter. if needed.
+                time.sleep(dt/2)
+                self.rest()
+                time.sleep(dt/2)
+            else:
+                time.sleep(dt)
