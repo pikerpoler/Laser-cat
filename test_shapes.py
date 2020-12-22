@@ -1,16 +1,25 @@
-from Shapes import Square, Star
+from Shapes import Square, Star, Circle, Trail
+import time
 
-points = [(70, 120), (70, 80), (100, 120), (100, 80)]
+points = [(70, 120), (70, 70), (120, 120), (120, 120)]
+center = (90, 90)
 
-print("creating first squrare")
-program = Square(points)
-print("running first square")
-program.run()
-print("program 1 sucssesful, running again")
-program.run()
-print("second run sucsessful, creatin new instance")
+print("running Square")
+start_t = time.time()
+Square(points).run()
+print("Square successful, run took ", time.time() - start_t, " seconds")
 
-program2 = Square(points)
-print("running second square")
-program2.run()
-print("program 2 sucssesful")
+print("running Star")
+start_t = time.time()
+Star(center, points).run()
+print("Star run successful, run took ", time.time() - start_t, " seconds")
+
+print("running Circle")
+start_t = time.time()
+Circle(center, 30).run()
+print("Circle successful, run took ", time.time() - start_t, " seconds")
+
+print("running Trail")
+start_t = time.time()
+Trail().run()
+print("Circle successful, run took ", time.time() - start_t, " seconds")
