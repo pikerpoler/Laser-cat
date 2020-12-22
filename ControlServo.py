@@ -22,14 +22,14 @@ class Angles:
     def __init__(self):
         # Set pins 11 & 12 as outputs, and define as PWM servo1 & servo2
         GPIO.setup(VERTICAL_PIN, GPIO.OUT)
-        vertical = GPIO.PWM(VERTICAL_PIN, 50)
+        self.vertical = GPIO.PWM(VERTICAL_PIN, 50)
         GPIO.setup(HORIZONTAL_PIN, GPIO.OUT)
-        horizontal = GPIO.PWM(HORIZONTAL_PIN, 50)
+        self.horizontal = GPIO.PWM(HORIZONTAL_PIN, 50)
         # Start PWM running on both servos, value of 0 (pulse off)
-        vertical.start(0)
-        horizontal.start(0) #TODO check what 0 means, mybe the next 3 lines are redundent
-        vertical.ChangeDutyCycle(2)
-        horizontal.ChangeDutyCycle(2)
+        self.vertical.start(0)
+        self.horizontal.start(0) #TODO check what 0 means, mybe the next 3 lines are redundent
+        self.vertical.ChangeDutyCycle(2)
+        self.horizontal.ChangeDutyCycle(2)
         self.rest()
         self.v = 0
         self.h = 0
@@ -50,14 +50,14 @@ class Angles:
         self.vertical.ChangeDutyCycle(0)
         self.horizontal.ChangeDutyCycle(0)
 
-    def set(self, point: tuple[float]):
+    def set(self, point):
         vertical_angle, horizontal_angle = point
         self.vertical.ChangeDutyCycle(2 + vertical_angle/180)
         self.horizontal.ChangeDutyCycle(2 + horizontal_angle/180)
         self.v = vertical_angle
         self.h = horizontal_angle
 
-    def move(self, point: tuple[float], travel_time=0.5, resolution=10, smooth=True):
+    def move(self, point, travel_time=0.5, resolution=10, smooth=True):
         vertical_angle, horizontal_angle = point
         dv = (vertical_angle - self.v)/resolution
         dh = (horizontal_angle - self.h)/resolution

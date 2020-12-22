@@ -5,7 +5,7 @@ from ControlServo import Angles
 angles = Angles.instance()
 
 class Square:
-    def __init__(self, points: list[tuple[float]]):
+    def __init__(self, points):
         self.points = points
 
     def run(self, duration=10, travel_time=0.5, delay=0.5):
@@ -17,7 +17,7 @@ class Square:
 
 
 class Star:
-    def __init__(self, center: tuple[float], edges: list[tuple[float]]):
+    def __init__(self, center, edges):
         self.centet = center
         self.edges = edges
 
