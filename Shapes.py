@@ -1,28 +1,56 @@
 import random
 import time
-from ControlServo import Angles
+from ControlServo import Angles, Laser, Food, Buzzer
 import math
+    
 
 angles = Angles.instance()
+laser = Laser.instance()
+food = Food.instance()
+buzzer = Buzzer.instance()
+
+
+# angles.calibrate()
+
+POINTS = "points"
+CENTER = "center"
+default = {
+    POINTS: [(-30, 20), (-30, -20), (-45, 30), (-45, -30)],
+    CENTER: (-30, 0)
+}
+
+class YumYum:
+    def run(self, angle = 180):
+        print("running yumyum")
+        buzzer.buzz()
+        food.give(angle)
 
 class Square:
-    def __init__(self, angles):
-        self.points = angles
+    def __init__(self, points = default[POINTS]):
+        self.points = points
 
-    def run(self, duration=10, travel_time=0.5, delay=0.5):
+    def run(self, duration=20, travel_time=0.5, delay=0.5):
+        
+        print("running square for ", duration, " Sec")
+        angles.set(self.points[0])
+        laser.on()
         start = time.time()
         while time.time() - start < duration:
             new_point = self.points[random.randrange(len(self.points))]
             angles.move(new_point, travel_time)
             time.sleep(delay)
+        laser.off()
+        print("done")
 
 
 class Star:
-    def __init__(self, center, edges):
+    def __init__(self, center=default[CENTER], edges=default[POINTS]):
         self.center = center
         self.edges = edges
 
-    def run(self, duration=10, travel_time=0.5, delay=0.5):
+    def run(self, duration=20, travel_time=0.5, delay=0.5):
+        print("running star for ", duration, " Sec")
+        laser.on()
         start = time.time()
         while time.time() - start < duration:
             angles.move(self.center, travel_time)
@@ -30,21 +58,29 @@ class Star:
             new_point = self.edges[random.randrange(len(self.edges))]
             angles.move(new_point, travel_time)
             time.sleep(delay)
+        laser.off()
 
 class Circle:
-    def __init__(self, center, radius):
+    def __init__(self, center=default[CENTER], radius=10):
         self.center = center
         self.radius = radius
 
-    def run(self, duration=10, resolution=180):
+    def run(self, duration=20, resolution=180):
+        print("running circle for ", duration, " Sec")
+        laser.on()
         start = time.time()
         theta = 0
         dtheta= 2*math.pi/resolution
         while time.time() - start < duration:
-            next = self.center + (self.radius * math.cos(theta), self.radius * math.sin(theta))
+            next = (self.center[0] + self.radius * math.cos(theta),
+                    self.center[1] + self.radius * math.sin(theta))
             theta += dtheta
             angles.move(next)
-    pass
+            print(next)
+        laser.off()
+        
+
+    
 
 
 class Trail: #might become infinity
@@ -68,4 +104,4 @@ class Trail: #might become infinity
             angles.move(next)
 
 
-    pass
+    

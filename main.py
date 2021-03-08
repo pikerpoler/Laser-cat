@@ -4,18 +4,19 @@ from firebase_admin import firestore
 from time import sleep
 import threading
 
-from Shapes import Square, Star, Circle, Trail
+from Shapes import Square, Star, Circle, YumYum
 
 DEVICE_NAME = 'prototype'
 MAX_ITERATIONS = 10
 
+
+FOOD = "FOOD"
 SHAPE = "SHAPE"
 OFFER = "OFFER"
 ANSWER = "ANSWER"
 shapes = {"SQUARE":Square(),
           "STAR": Star(),
           "CIRCLE": Circle(),
-          "TRAIL": Trail()
           }
 
     
@@ -30,13 +31,15 @@ doc_ref = db.collection('users').document(DEVICE_NAME)
 callback_done = threading.Event()
 
 
-def message_handler(message_type, message):
+def message_handler(message_type, message, play_time):
     if message_type == SHAPE:
-        shapes[message].run()
+        shapes[message].run(play_time)
         return
     if message_type == OFFER:
         print(message)
         send_message(ANSWER, "dummy answer")
+    if message_type == FOOD:
+        YumYum().run()
         return
     
     print("unsupported message")
@@ -51,9 +54,8 @@ def on_snapshot(doc_snapshot, changes, read_time):
         if data['device_unread']:
             data['device_unread'] = False
             doc_ref.set(data)
-            message_handler( data['message_to_device_type'],data['message_to_device'])
-        else:
-            print("no incoming messages")
+            message_handler( data['message_to_device_type'],data['message_to_device'], data['play_time'])
+        
     callback_done.set()
     
     # Watch the document
