@@ -1,0 +1,32 @@
+[debug] [2020-12-30T13:18:39.017Z] ----------------------------------------------------------------------
+[debug] [2020-12-30T13:18:39.028Z] Command:       /usr/bin/node /usr/local/bin/firebase init
+[debug] [2020-12-30T13:18:39.030Z] CLI Version:   9.1.0
+[debug] [2020-12-30T13:18:39.030Z] Platform:      linux
+[debug] [2020-12-30T13:18:39.030Z] Node Version:  v10.21.0
+[debug] [2020-12-30T13:18:39.031Z] Time:          Wed Dec 30 2020 15:18:39 GMT+0200 (Israel Standard Time)
+[debug] [2020-12-30T13:18:39.032Z] ----------------------------------------------------------------------
+[debug] [2020-12-30T13:18:39.032Z] 
+[debug] [2020-12-30T13:18:39.053Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-12-30T13:18:39.054Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /home/pi/Documents/Laser-cat
+
+[debug] [2020-12-30T14:12:17.525Z] TypeError: Cannot read property 'setRawMode' of null
+    at ReadStream.setRawMode (tty.js:69:28)
+    at Interface._setRawMode (readline.js:269:16)
+    at Interface.close (readline.js:394:10)
+    at ReadStream.ontermend (readline.js:180:10)
+    at ReadStream.emit (events.js:203:15)
+    at ReadStream.EventEmitter.emit (domain.js:448:20)
+    at endReadableNT (_stream_readable.js:1145:12)
+    at process._tickCallback (internal/process/next_tick.js:63:19)
+[error] 
+[error] Error: An unexpected error has occurred.

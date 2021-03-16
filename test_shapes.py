@@ -4,11 +4,22 @@ import time
 
 
 
-Square().run()
+
+Star().run(6)
+Star().run(6)
+Star().run(6)
+Star().run(6)
+
+Circle().run()
+
+
+
+Square().run()   
 
 Star().run()
 
-Circle().run()
+
+
 
  
  
